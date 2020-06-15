@@ -1,5 +1,6 @@
 scripts:
-  echo: "echo echo test ok"
+  desc:echo: "description for echo example"
+  echo: "echo echo test ok" # This is a yml comment which is better then json
   test:run:a: "echo ... run test for A option ..."
   desc:test:run:a: "This is a comment desc:test:run:a"
   test:run:b: "echo ... run test for A option ..."
