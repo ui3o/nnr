@@ -5,8 +5,17 @@
   "scripts": {
     "test:run:a": "echo ... run test for A option ...",
     "comment:test:run:a": "This is a comment comment:test:run:a",
+    
     "comment:test:run:b": "This is a comment comment:test:run:b",
-    "test:run:b": "echo ... run test for A option ..."
+    "test:run:b": "echo ... run test for A option ...",
+    
+    "comment:test:find:b": "This is a comment comment:test:run:b",
+    "test:find": "find . -type f -exec echo file: {} \\;",
+    
+    "testr": "nrr test:r*",
+    "testrun": "nrr test:run:*",
+    "alltest": "nrr test**"
+    
   },
   "license": "MIT",
   "dependencies": {

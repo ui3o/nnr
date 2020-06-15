@@ -3,7 +3,7 @@
   "version": "1.0.1",
   "description": "Node based Npm Run",
   "scripts": {
-    "comment:test": "Comment for test srtipt",
+    "comment:test": "Comment for test script",
     "test": "echo \"No test specified for this project\""
   },
   "homepage": "https://github.com/ui3o/nnr",

@@ -12,6 +12,7 @@ const COMMENT = 'comment:'
 const options = yargs
     .usage(`Name: Node based Npm Run, Easy replacement for npm run.\n\nUsage: nnr [OPTION...] scripts.key`)
     //.option("n", { alias: "name", describe: "Your name", type: "string", demandOption: true })
+    .option("c", { alias: "cw", describe: "Current working directory", type: "string" })
     .option("j", { alias: "packagejsonpath", describe: "Path to package.json file", type: "string" })
     .option("p", { alias: "parallel", describe: "Run a group of tasks in parallel", type: "boolean" })
     .option("s", { alias: "sequential", describe: "Run a group of tasks sequentially", type: "string" })
@@ -26,7 +27,8 @@ const packagejson = options.j ? options.j : 'package.json';
 const scripts = JSON.parse(fs.readFileSync(packagejson)).scripts;
 const choices = [];
 
-if(currentScriptId) {
+if (currentScriptId) {
+    console.log(`currentScriptId: ${currentScriptId}`)
 
 } else {
     Object.keys(scripts).forEach(key => {
@@ -48,22 +50,21 @@ if(currentScriptId) {
 
 
 (async function () {
-    response = await prompts({
-        type: 'select',
-        name: 'value',
-        message: 'Select environment',
-        choices
-    });
-    if (response.value) {
-        await runcmd(scripts[response.value]);
+    if (choices.length > 0) {
+        response = await prompts({
+            type: 'select',
+            name: 'value',
+            message: 'Select environment',
+            choices
+        });
+        if (response.value) {
+            await runcmd(scripts[response.value]);
+        }
     }
 })();
 
-async function runcmd(script, options) {
-    options = !options ? {} : options;
-    options.cwd = !options.cwd ? null : options.cwd;
-
-    const cmd = spawn('bash', ['-c', script.replace('/\\/g', '\\\\')], { cwd: options.cwd });
+async function runcmd(script) {
+    const cmd = spawn('bash', ['-c', script.replace('/\\/g', '\\\\')], { cwd: options.c });
     const onClose = new Promise((resolve) => {
         cmd.on('close', (code) => resolve(code));
     });
