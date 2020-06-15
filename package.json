@@ -1,6 +1,6 @@
 {
   "name": "nnr",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Node based Npm Run",
   "scripts": {
     "desc:test": "Comment for test script",
