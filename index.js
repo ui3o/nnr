@@ -110,7 +110,7 @@ log(JSON.stringify(choices));
 
 async function runcmd(script) {
     log('script=', script)
-    const cmd = spawn('bash', ['-c', script.replace('/\\/g', '\\\\')], { cwd: options.c, stdio: 'inherit' });
+    const cmd = spawn('bash', ['-c', script.replace('/\\/g', '\\\\')], { stdio: 'inherit' });
     const onClose = new Promise((resolve) => {
         cmd.on('close', (code) => resolve(code));
     });
