@@ -1,0 +1,16 @@
+{
+  "name": "nnr",
+  "version": "1.0.0",
+  "description": "",
+  "scripts": {
+    "comment:test": "Comment for test srtipt",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "bin": "./index.js",
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "prompts": "^2.3.2",
+    "yargs": "^15.3.1"
+  }
+}
