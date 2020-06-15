@@ -4,7 +4,7 @@
   "description": "Node based Npm Run",
   "scripts": {
     "comment:test": "Comment for test srtipt",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"No test specified for this project\" &&"
   },
   "bin": "./index.js",
   "author": "",
