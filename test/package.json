@@ -1,24 +1,31 @@
 {
   "name": "nnr-test",
   "version": "0.0.1",
-  "description": "nrr test package json",
+  "description": "nnr test package json",
   "scripts": {
+
+    "echo": "echo echo test ok",
+
     "test:run:a": "echo ... run test for A option ...",
-    "comment:test:run:a": "This is a comment comment:test:run:a",
+    "desc:test:run:a": "This is a comment desc:test:run:a",
     
-    "comment:test:run:b": "This is a comment comment:test:run:b",
     "test:run:b": "echo ... run test for A option ...",
+    "desc:test:run:b": "This is a comment desc:test:run:b",
     
-    "comment:test:find:b": "This is a comment comment:test:run:b",
     "test:find": "find . -type f -exec echo file: {} \\;",
-    
-    "testr": "nrr test:r*",
-    "testrun": "nrr test:run:*",
-    "alltest": "nrr test**"
+    "desc:test:find:b": "This is a comment desc:test:run:b",
+
+    "test:roo": "echo ... run test for test:roo ...",
+    "test:ruu": "echo ... run test for test:ruu ...",
+
+    "testr": "nnr test:r*",
+    "testrun": "nnr test:run:*",
+    "alltest": "nnr test**"
+
     
   },
   "license": "MIT",
   "dependencies": {
-    "nrr": "^1.0.1"
+    "nnr": "^1.0.1"
   }
 }

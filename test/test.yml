@@ -1,0 +1,13 @@
+scripts:
+  - echo: "echo echo test ok",
+  - test:run:a: "echo ... run test for A option ...",
+  - desc:test:run:a: "This is a comment desc:test:run:a",
+  - test:run:b: "echo ... run test for A option ...",
+  - desc:test:run:b: "This is a comment desc:test:run:b",
+  - test:find: "find . -type f -exec echo file: {} \\;",
+  - desc:test:find:b: "This is a comment desc:test:run:b",
+  - test:roo: "echo ... run test for test:roo ...",
+  - test:ruu: "echo ... run test for test:ruu ...",
+  - testr: "nnr test:r*",
+  - testrun: "nnr test:run:*",
+  - alltest: "nnr test**"

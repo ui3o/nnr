@@ -8,7 +8,7 @@ Easy replacement for `npm run`. Just run `nrr script:name` instead of ~~npm run 
 * ```npm i -g nnr```
 * Install [Cygwin](https://www.cygwin.com/) on Windows! see [here](#Dependencies)
 
-# What is it resolve?
+# Motivation
 * cross platform (windows and linux) script in npm-script
 * resolves
     * environment variable, possible to use only $ENV_VAR, no longer need on %ENV_VAR% on window
@@ -17,7 +17,7 @@ Easy replacement for `npm run`. Just run `nrr script:name` instead of ~~npm run 
 
 # Features
 
-* `comment:` tag for all script
+* `desc:` description tag for all script
 * run multiple npm-scripts in parallel or sequential like *[npm-run-all](https://github.com/mysticatea/npm-run-all)*
 * all script runs inside a *bash* shell
 
@@ -44,8 +44,8 @@ Examples are located in [test/package.json](test/package.json) file.
 
 * [x] support sequential run
 * [ ] support parallel run
-* [x] package.json file
-* [ ] *.yml file
+* [x] support package.json file
+* [ ] support *.yml file
 
 # Alternatives
 

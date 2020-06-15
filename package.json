@@ -3,7 +3,7 @@
   "version": "1.0.1",
   "description": "Node based Npm Run",
   "scripts": {
-    "comment:test": "Comment for test script",
+    "desc:test": "Comment for test script",
     "test": "echo \"No test specified for this project\""
   },
   "homepage": "https://github.com/ui3o/nnr",
@@ -27,6 +27,7 @@
   "author": "ui3o.com",
   "license": "MIT",
   "dependencies": {
+    "js-yaml": "^3.14.0",
     "prompts": "^2.3.2",
     "yargs": "^15.3.1"
   }
