@@ -12,30 +12,39 @@ const COMMENT = 'comment:'
 const options = yargs
     .usage(`Name: Node based Npm Run, Easy replacement for npm run.\n\nUsage: nnr [OPTION...] scripts.key`)
     //.option("n", { alias: "name", describe: "Your name", type: "string", demandOption: true })
+    .option("j", { alias: "packagejsonpath", describe: "Path to package.json file", type: "string" })
     .option("p", { alias: "parallel", describe: "Run a group of tasks in parallel", type: "boolean" })
     .option("s", { alias: "sequential", describe: "Run a group of tasks sequentially", type: "string" })
     .alias('v', 'version')
     .alias('h', 'help')
-    .epilog('copyright 2020')
+    .epilog('copyright@2020')
     .argv;
 
-const scripts = JSON.parse(fs.readFileSync('package.json')).scripts;
+console.log(JSON.stringify(options));
+const currentScriptId = options._[0];
+const packagejson = options.j ? options.j : 'package.json';
+const scripts = JSON.parse(fs.readFileSync(packagejson)).scripts;
 const choices = [];
-Object.keys(scripts).forEach(key => {
-    if (!key.startsWith(COMMENT)) {
-        const mitem = { title: key, value: key };
-        // find comment
-        Object.keys(scripts).forEach(comment => {
-            if (comment.startsWith(COMMENT)) {
-                const commentKey = comment.replace(COMMENT, '');
-                if (commentKey === key) {
-                    mitem.description = scripts[comment];
+
+if(currentScriptId) {
+
+} else {
+    Object.keys(scripts).forEach(key => {
+        if (!key.startsWith(COMMENT)) {
+            const mitem = { title: key, value: key };
+            // find comment
+            Object.keys(scripts).forEach(comment => {
+                if (comment.startsWith(COMMENT)) {
+                    const commentKey = comment.replace(COMMENT, '');
+                    if (commentKey === key) {
+                        mitem.description = scripts[comment];
+                    }
                 }
-            }
-        });
-        choices.push(mitem);
-    }
-});
+            });
+            choices.push(mitem);
+        }
+    });
+}
 
 
 (async function () {
@@ -49,7 +58,6 @@ Object.keys(scripts).forEach(key => {
         await runcmd(scripts[response.value]);
     }
 })();
-
 
 async function runcmd(script, options) {
     options = !options ? {} : options;

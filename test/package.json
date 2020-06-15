@@ -1,0 +1,15 @@
+{
+  "name": "nnr-test",
+  "version": "0.0.1",
+  "description": "nrr test package json",
+  "scripts": {
+    "test:run:a": "echo ... run test for A option ...",
+    "comment:test:run:a": "This is a comment comment:test:run:a",
+    "comment:test:run:b": "This is a comment comment:test:run:b",
+    "test:run:b": "echo ... run test for A option ..."
+  },
+  "license": "MIT",
+  "dependencies": {
+    "nrr": "^1.0.1"
+  }
+}

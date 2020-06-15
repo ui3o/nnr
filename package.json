@@ -6,9 +6,26 @@
     "comment:test": "Comment for test srtipt",
     "test": "echo \"No test specified for this project\""
   },
+  "homepage": "https://github.com/ui3o/nnr",
+  "repository": "ui3o/nnr",
+  "keywords": [
+    "cli",
+    "command",
+    "commandline",
+    "tool",
+    "npm",
+    "npm-scripts",
+    "run",
+    "sequential",
+    "serial",
+    "parallel"
+  ],
   "bin": "./index.js",
-  "author": "",
-  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ui3o/nnr/issues"
+  },
+  "author": "ui3o.com",
+  "license": "MIT",
   "dependencies": {
     "prompts": "^2.3.2",
     "yargs": "^15.3.1"
