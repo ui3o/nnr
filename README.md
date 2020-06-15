@@ -43,7 +43,7 @@ Examples are located in [test/package.json](test/package.json) file.
 # Status
 
 * [x] support menu for select a script
-* [ ] support sequential run
+* [x] support sequential run
 * [ ] support parallel run
 * [x] support package.json file
 * [x] support *.yml file

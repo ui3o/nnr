@@ -1,7 +1,7 @@
 {
   "name": "nnr",
   "version": "1.0.3",
-  "description": "Node based Npm Run",
+  "description": "Node based Npm Run. CLI tool to run node scripts.",
   "scripts": {
     "desc:test": "Comment for test script",
     "test": "echo \"No test specified for this project\""
@@ -20,7 +20,11 @@
     "serial",
     "parallel"
   ],
-  "bin": "./index.js",
+  "bin": {
+    "nnrs": "./bin/nnrs.js",
+    "nnrp": "./bin/nnrp.js",
+    "nnr": "./bin/nnr.js"
+  },
   "bugs": {
     "url": "https://github.com/ui3o/nnr/issues"
   },

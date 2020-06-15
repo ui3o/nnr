@@ -18,7 +18,7 @@
     "test:roo": "echo ... run test for test:roo ...",
     "test:ruu": "echo ... run test for test:ruu ...",
 
-    "testr": "nnr test:r*",
+    "testr": "nnrs test:r*",
     "testrun": "nnr test:run:*",
     "alltest": "nnr test**"
 
