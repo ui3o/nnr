@@ -4,6 +4,7 @@ const fs = require('fs');
 const prompts = require('prompts');
 const { spawn } = require('child_process');
 const yargs = require("yargs");
+const yaml = require('js-yaml');
 
 const DESC = 'desc:'
 
@@ -37,11 +38,7 @@ const choices = [];
 var scripts;
 
 if (options.y) {
-    try {
-        scripts = yaml.safeLoad(fs.readFileSync(options.y, 'utf8'));
-    } catch (e) {
-        log(e);
-    }
+    scripts = yaml.safeLoad(fs.readFileSync(options.y, 'utf8')).scripts;
 } else {
     scripts = JSON.parse(fs.readFileSync(packagejson)).scripts;
 }
