@@ -13,7 +13,7 @@
     "desc:test:run:b": "This is a comment desc:test:run:b",
     
     "test:find": "find . -type f -exec echo file: {} \\;",
-    "desc:test:find:b": "This is a comment desc:test:run:b",
+    "desc:test:find": "This is a comment desc:test:find",
 
     "test:roo": "echo ... run test for test:roo ...",
     "test:ruu": "echo ... run test for test:ruu ...",

@@ -82,6 +82,10 @@ Object.keys(scripts).forEach(key => {
                 }
             }
         });
+        // pass key value if description not present
+        if(!mitem.description) {
+            mitem.description = scripts[key];
+        }
         choices.push(mitem);
     }
 });
