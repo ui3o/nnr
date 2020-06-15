@@ -1,2 +1,5 @@
 # nnr
-Node based Npm Runner
+
+`N`ode based `N`pm `R`un
+
+Easy replacement for `npm run`.
