@@ -42,10 +42,11 @@ Examples are located in [test/package.json](test/package.json) file.
 
 # Status
 
-* [x] support sequential run
+* [x] support menu for select a script
+* [ ] support sequential run
 * [ ] support parallel run
 * [x] support package.json file
-* [ ] support *.yml file
+* [x] support *.yml file
 
 # Alternatives
 
