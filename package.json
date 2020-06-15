@@ -1,7 +1,7 @@
 {
   "name": "nnr",
   "version": "1.0.0",
-  "description": "",
+  "description": "Node based Npm Run",
   "scripts": {
     "comment:test": "Comment for test srtipt",
     "test": "echo \"Error: no test specified\" && exit 1"
