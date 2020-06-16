@@ -1,19 +1,18 @@
-scripts:
-  desc:echo: "description for echo example"
-  echo: "echo echo test ok" # This is a yml comment which is better then json
-  
-  test:run:a: "echo ... run test for A option ..."
-  desc:test:run:a: "This is a comment desc:test:run:a"
-  
-  test:run:b: "echo ... run test for A option ..."
-  desc:test:run:b: "This is a comment desc:test:run:b"
-  
-  test:find: "find . -type f -exec echo file: {} \\;"
-  desc:test:find: "This is a comment desc:test:find"
-  
-  test:roo: "echo ... run test for test:roo ..."
-  test:ruu: "echo ... run test for test:ruu ..."
-  
-  testr: "nnr test:r*"
-  testrun: "nnr test:run:*"
-  alltest: "nnr test**"
+desc:echo: "description for echo example"
+echo: "echo echo test ok" # This is a yml comment which is better then json
+
+test:run:a: "echo ... run test for A option ..."
+desc:test:run:a: "This is a comment desc:test:run:a"
+
+test:run:b: "echo ... run test for A option ..."
+desc:test:run:b: "This is a comment desc:test:run:b"
+
+test:find: "find . -type f -exec echo file: {} \\;"
+desc:test:find: "This is a comment desc:test:find"
+
+test:roo: "echo ... run test for test:roo ..."
+test:ruu: "echo ... run test for test:ruu ..."
+
+testr: "nnr test:r*"
+testrun: "nnr test:run:*"
+alltest: "nnr test**"

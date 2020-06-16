@@ -11,11 +11,9 @@ module.exports = function nrr(sequential) {
 
     // cli setup
     const options = yargs
-        .usage(`Name: Node based Npm Run, Easy replacement for npm run.\n\nUsage: nnr [OPTION...] scripts.key`)
+        .usage(`Name: Node based Npm Run. Easy replacement for npm run.\n\nUsage: nnr [OPTION...] [path/to/.json | path/to/.yml] scripts.key`)
         //.option("n", { alias: "name", describe: "Your name", type: "string", demandOption: true })
         .option("c", { alias: "cw", describe: "Current working directory", type: "string" })
-        .option("j", { alias: "packagejsonpath", describe: "Path to package.json file", type: "string" })
-        .option("y", { alias: "yamlpath", describe: "Path to *.yml file", type: "string" })
         .option("k", { alias: "keep", describe: "Keep the current directory for working directory", type: "boolean" })
         .option("s", { alias: "sequential", describe: "Run a group of tasks sequentially", type: "boolean" })
         .option("p", { alias: "parallel", describe: "Run a group of tasks in parallel", type: "boolean" })
@@ -25,6 +23,23 @@ module.exports = function nrr(sequential) {
         .epilog('copyright@2020')
         .argv;
     const log = options.d ? console.log : () => { };
+
+    if (options._.length > 2) {
+        console.log('[ERROR] Too many argument was set!')
+        process.exit(-1);
+    }
+
+    let currentScriptId = '';
+    options.j = 'package.json'
+    options._.forEach(param => {
+        if (param.endsWith('.json') || param.endsWith('.yml')) {
+            filePath = param;
+            options.y = param.endsWith('.yml') ? param : undefined;
+            options.j = param.endsWith('.json') ? param : undefined;
+        } else {
+            currentScriptId = param;
+        }
+    });
 
     if (sequential !== undefined && sequential) {
         log('set sequential')
@@ -37,19 +52,17 @@ module.exports = function nrr(sequential) {
     log(JSON.stringify(options));
 
     var regex = '.*';
-    const currentScriptId = options._[0];
-    const packagejson = options.j ? options.j : 'package.json';
     const path = options.k ? '' :
         options.c ? options.c :
             options.y ? options.y.replace(/[\w]*\.yml/, '') :
-                packagejson.replace(/[\w]*\.json/, '');
+                options.j.replace(/[\w]*\.json/, '');
     const choices = [];
     var scripts;
 
     if (options.y) {
-        scripts = yaml.safeLoad(fs.readFileSync(options.y, 'utf8')).scripts;
+        scripts = yaml.safeLoad(fs.readFileSync(options.y, 'utf8'));
     } else {
-        scripts = JSON.parse(fs.readFileSync(packagejson)).scripts;
+        scripts = JSON.parse(fs.readFileSync(options.j)).scripts;
     }
 
 
