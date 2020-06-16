@@ -2,7 +2,7 @@
 
 **N**ode based **N**pm **R**un
 
-Easy replacement for `npm run`. Just run `nrr script:name` instead of ~~npm run script:name~~
+Easy replacement for `npm run`. Just run `nnr script:name` instead of ~~npm run script:name~~
 
 # Install 
 * ```npm i -g nnr```
@@ -37,8 +37,8 @@ Examples are located in [test/package.json](test/package.json) file.
 
 | command        | description|
 | ------------- |:-------------|
-| *nrr* | without parameters it gives a nice *choices* menu |
-| *nrr --help* | gives a standard help manual which is generated with [yargs](https://www.npmjs.com/package/yargs)|
+| *nnr* | without parameters it gives a nice *choices* menu |
+| *nnr --help* | gives a standard help manual which is generated with [yargs](https://www.npmjs.com/package/yargs)|
 
 
 # Status

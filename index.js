@@ -6,7 +6,7 @@ const { spawn } = require('child_process');
 const yargs = require("yargs");
 const yaml = require('js-yaml');
 
-module.exports = function nrr(sequential) {
+module.exports = function nnr(sequential) {
     const DESC = 'desc:'
 
     // cli setup
