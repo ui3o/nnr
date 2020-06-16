@@ -1,6 +1,6 @@
 {
   "name": "nnr",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "Node based Npm Run. CLI tool to run node scripts.",
   "scripts": {
     "desc:test": "Comment for test script",
