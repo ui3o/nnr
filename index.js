@@ -11,7 +11,7 @@ module.exports = function nrr(sequential) {
 
     // cli setup
     const options = yargs
-        .usage(`Name: Node based Npm Run. Easy replacement for npm run.\n\nUsage: nnr [OPTION...] [path/to/.json | path/to/.yml] scripts.key`)
+        .usage(`Name: Node based Npm Run. Easy replacement for npm run.\n\nUsage: nnr [OPTION...] [path/to/.json | path/to/.yml] [scripts.key]`)
         //.option("n", { alias: "name", describe: "Your name", type: "string", demandOption: true })
         .option("c", { alias: "cw", describe: "Current working directory", type: "string" })
         .option("k", { alias: "keep", describe: "Keep the current directory for working directory", type: "boolean" })
