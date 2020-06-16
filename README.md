@@ -17,9 +17,10 @@ Easy replacement for `npm run`. Just run `nrr script:name` instead of ~~npm run 
 
 # Features
 
+* possible to run script from located .json or .yml
 * `desc:` description tag for all script
 * run multiple npm-scripts in parallel or sequential like *[npm-run-all](https://github.com/mysticatea/npm-run-all)*
-* all script runs inside a *bash* shell
+* all **script runs** inside a *bash* shell
 
 # Examples
 
