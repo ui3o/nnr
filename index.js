@@ -5,8 +5,8 @@ const prompts = require('prompts');
 const { spawn } = require('child_process');
 const yargs = require("yargs");
 const yaml = require('js-yaml');
-var pathLib = require("path");
-
+const pathLib = require("path");
+const isWin = process.platform === "win32";
 
 module.exports = async function nnr(sequential, currentFile) {
     const DESC = 'desc:'
@@ -34,14 +34,18 @@ module.exports = async function nnr(sequential, currentFile) {
     const env = process.env;
     // add original path
     if (!env.NNR_ORIGINALPATH) {
-        env['NNR_ORIGINALPATH'] = env.PWD;
+        env['NNR_ORIGINALPATH'] = process.cwd();
     }
     // detect local json
-    const localPackageJson = `${env.PWD}/package.json`
+    const localPackageJson = `${process.cwd()}/package.json`
     log('localPackageJson', localPackageJson);
     if (fs.existsSync(localPackageJson)) {
         // add node modules bin to path
-        env.PATH = env.PWD + '/node_modules/.bin:' + env.PATH;
+        if (isWin) {
+            env.Path = process.cwd() + '\\node_modules\\.bin;' + env.Path;
+        } else {
+            env.PATH = process.cwd() + '/node_modules/.bin:' + env.PATH;
+        }
         // get all npm env variable
         await getenv();
     }
@@ -176,14 +180,14 @@ module.exports = async function nnr(sequential, currentFile) {
     }
 
     async function getenv() {
-        const cmd = spawn('npm', ['run', 'env']);
+        const cmd = spawn('npm', ['run', 'env'], { shell: true });
         cmd.stdout.on('data', (data) => {
-            const allEnv = data.toString('utf8').replace('\r').split('\n');
+            const allEnv = data.toString('utf8').replace('\r', '').split('\n');
             allEnv.forEach(e => {
                 if (e.startsWith('npm_')) {
                     const ce = e.split('=');
                     // log('npm env:', ce[0], '=', ce[1])
-                    env[ce[0]] = ce[1];
+                    env[ce[0]] = ce[1].replace('\r', '').replace('\n', '');
                 }
             });
         });
