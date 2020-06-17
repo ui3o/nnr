@@ -29,8 +29,10 @@ module.exports = async function nnr(sequential) {
         process.exit(-1);
     }
 
-    // detect local json
     const env = process.env;
+    // add original path
+    env['NNR_ORIGINALPATH'] = env.PWD;
+    // detect local json
     const localPackageJson = `${env.PWD}/package.json`
     log('env', localPackageJson);
     if (fs.existsSync(localPackageJson)) {
