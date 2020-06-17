@@ -4,19 +4,19 @@
   "description": "nnr test package json",
   "scripts": {
 
-    "echo": "echo echo test ok",
+    "echo": "package.json: Original path is $NNR_ORIGINALPATH",
 
-    "test:run:a": "echo ... run test for A option ...",
+    "test:run:a": "echo ... package.json: run test for A option  ...",
     "desc:test:run:a": "This is a comment desc:test:run:a",
     
-    "test:run:b": "echo ... run test for A option ...",
+    "test:run:b": "echo ... package.json: run test for B option  ...",
     "desc:test:run:b": "This is a comment desc:test:run:b",
     
-    "test:find": "find . -type f -exec echo file: {} \\;",
+    "test:find": "find . -type f -exec echo file from package.json: {} \\;",
     "desc:test:find": "This is a comment desc:test:find",
 
-    "test:roo": "echo ... run test for test:roo ...",
-    "test:ruu": "echo ... run test for test:ruu ...",
+    "test:roo": "echo ... package.json: run test for test:roo ...",
+    "test:ruu": "echo ... package.json: run test for test:ruu ...",
 
     "testr": "nnrs test:r*",
     "testrun": "nnrs test:run:*",

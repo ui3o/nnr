@@ -1,18 +1,18 @@
-desc:echo: "description for echo example"
-echo: "echo echo test ok" # This is a yml comment which is better then json
+desc:echo: "Original path is $NNR_ORIGINALPATH"
+echo: "echo test.yml: Original path is $NNR_ORIGINALPATH" # This is a yml comment which is better then json
 
-test:run:a: "echo ... run test for A option ..."
+test:run:a: "echo ... test.yml: run test for A option ..."
 desc:test:run:a: "This is a comment desc:test:run:a"
 
-test:run:b: "echo ... run test for A option ..."
+test:run:b: "echo ... test.yml: run test for B option ..."
 desc:test:run:b: "This is a comment desc:test:run:b"
 
-test:find: "find . -type f -exec echo file: {} \\;"
+test:find: "find . -type f -exec echo file from test.yml: {} \\;"
 desc:test:find: "This is a comment desc:test:find"
 
-test:roo: "echo ... run test for test:roo ..."
-test:ruu: "echo ... run test for test:ruu ..."
+test:roo: "echo ... test.yml: run test for test:roo ..."
+test:ruu: "echo ... test.yml: run test for test:ruu ..."
 
-testr: "nnrs test:r*"
+testr: "node ../bin/nnrs test:r*"
 testrun: "nnrs test:run:*"
 alltest: "nnrs test**"

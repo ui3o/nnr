@@ -5,8 +5,10 @@ const prompts = require('prompts');
 const { spawn } = require('child_process');
 const yargs = require("yargs");
 const yaml = require('js-yaml');
+var pathLib = require("path");
 
-module.exports = async function nnr(sequential) {
+
+module.exports = async function nnr(sequential, currentFile) {
     const DESC = 'desc:'
 
     // cli setup
@@ -31,7 +33,7 @@ module.exports = async function nnr(sequential) {
 
     const env = process.env;
     // add original path
-    if(!env.NNR_ORIGINALPATH) {
+    if (!env.NNR_ORIGINALPATH) {
         env['NNR_ORIGINALPATH'] = env.PWD;
     }
     // detect local json
@@ -57,6 +59,13 @@ module.exports = async function nnr(sequential) {
             currentScriptId = param;
         }
     });
+
+    if (currentFile) {
+        options.y = currentFile.endsWith('.yml') ? currentFile : undefined;
+        options.j = currentFile.endsWith('.json') ? currentFile : undefined;
+    } else {
+        env.NNR_ORIGINALFILE = options.y ? pathLib.resolve(options.y) : pathLib.resolve(options.j);
+    }
 
     if (sequential !== undefined && sequential) {
         log('set sequential')
