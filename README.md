@@ -19,7 +19,8 @@ Easy replacement for `npm run`. Just run `nnr script:name` instead of ~~npm run 
 
 * possible to run script from located .json or .yml
 * inherit npm variables
-* add extra **NNR_ORIGINALPATH** environment variable to know the original call path
+* it provides extra **NNR_ORIGINALPATH** environment variable to know the original call path
+* possible to **debug sequential** run with **-a** option or **NNR_ASKTOCONTINUE=true** environment variable
 * `desc:` description tag for all script
 * run multiple npm-scripts in parallel or sequential like *[npm-run-all](https://github.com/mysticatea/npm-run-all)*
 * all **script runs** inside a *bash* shell

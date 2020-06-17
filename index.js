@@ -177,7 +177,7 @@ module.exports = async function nnr(sequential, currentFile) {
     async function runcmd(script) {
         log('script=', script);
         const scrpt = script.replace('/\\/g', '\\\\');
-        if (options.s && options.a) {
+        if (options.s && (options.a || env.NNR_ASKTOCONTINUE)) {
             // prompt for keypress to continue
             process.stdout.write(`>> ${scrpt} ... Press any key to continue...`);
             await ask().then(() => { console.log() });
