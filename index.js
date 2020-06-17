@@ -6,7 +6,7 @@ const { spawn } = require('child_process');
 const yargs = require("yargs");
 const yaml = require('js-yaml');
 
-module.exports = function nnr(sequential) {
+module.exports = async function nnr(sequential) {
     const DESC = 'desc:'
 
     // cli setup
@@ -28,6 +28,19 @@ module.exports = function nnr(sequential) {
         console.log('[ERROR] Too many argument was set!')
         process.exit(-1);
     }
+
+    // detect local json
+    const env = process.env;
+    const localPackageJson = `${env.PWD}/package.json`
+    log('env', localPackageJson);
+    if (fs.existsSync(localPackageJson)) {
+        // add node modules bin to path
+        env.PATH = env.PWD + '/node_modules/.bin:' + env.PATH;
+        // get all npm env variable
+        await getenv();
+    }
+    // log('newEnv', process.env)
+
 
     let currentScriptId = '';
     options.j = 'package.json'
@@ -114,34 +127,32 @@ module.exports = function nnr(sequential) {
 
 
     log(JSON.stringify(choices));
-    (async function () {
-        if (choices.length > 1) {
-            let scripts2run = [];
-            if (!options.s) {
-                response = await prompts({
-                    type: 'select',
-                    name: 'value',
-                    message: 'Select environment',
-                    choices
-                });
-                if (response.value) {
-                    log('response.value', response.value);
-                    scripts2run.push(response.value);
-                }
-            } else {
-                log(choices.map(choice => choice.value));
-                scripts2run = choices.map(choice => choice.value);
+    if (choices.length > 1) {
+        let scripts2run = [];
+        if (!options.s) {
+            response = await prompts({
+                type: 'select',
+                name: 'value',
+                message: 'Select environment',
+                choices
+            });
+            if (response.value) {
+                log('response.value', response.value);
+                scripts2run.push(response.value);
             }
-            scripts2run.forEach(async (key) => {
-                await runcmd(scripts[key]);
-            })
-        } else if (choices.length === 1) {
-            let script = scripts[choices[0].value];
-            // run single command
-            log('script', script);
-            await runcmd(script);
+        } else {
+            log(choices.map(choice => choice.value));
+            scripts2run = choices.map(choice => choice.value);
         }
-    })();
+        scripts2run.forEach(async (key) => {
+            await runcmd(scripts[key]);
+        })
+    } else if (choices.length === 1) {
+        let script = scripts[choices[0].value];
+        // run single command
+        log('script', script);
+        await runcmd(script);
+    }
 
     async function runcmd(script) {
         log('script=', script);
@@ -151,4 +162,25 @@ module.exports = function nnr(sequential) {
         });
         return onClose;
     }
+
+    async function getenv() {
+        const cmd = spawn('npm', ['run', 'env']);
+        cmd.stdout.on('data', (data) => {
+            const allEnv = data.toString('utf8').replace('\r').split('\n');
+            allEnv.forEach(e => {
+                if (e.startsWith('npm_')) {
+                    const ce = e.split('=');
+                    log('npm env:', ce[0], '=', ce[1])
+                    env[ce[0]] = ce[1];
+                }
+            });
+        });
+        cmd.stderr.on('data', (data) => {
+            console.error(data);
+        });
+        return new Promise((resolve) => {
+            cmd.on('close', (code) => resolve(code));
+        });
+    }
+
 }
