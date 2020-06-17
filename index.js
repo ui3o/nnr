@@ -31,7 +31,9 @@ module.exports = async function nnr(sequential) {
 
     const env = process.env;
     // add original path
-    env['NNR_ORIGINALPATH'] = env.PWD;
+    if(!env.NNR_ORIGINALPATH) {
+        env['NNR_ORIGINALPATH'] = env.PWD;
+    }
     // detect local json
     const localPackageJson = `${env.PWD}/package.json`
     log('env', localPackageJson);
