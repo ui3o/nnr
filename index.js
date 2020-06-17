@@ -187,7 +187,7 @@ module.exports = async function nnr(sequential, currentFile) {
                 if (e.startsWith('npm_')) {
                     const ce = e.split('=');
                     // log('npm env:', ce[0], '=', ce[1])
-                    env[ce[0]] = ce[1].replace('\r', '').replace('\n', '');
+                    env[ce[0]] = ce[1] === undefined ? '' : ce[1].replace('\r', '').replace('\n', '');
                 }
             });
         });
