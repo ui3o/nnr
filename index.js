@@ -157,9 +157,9 @@ module.exports = async function nnr(sequential, currentFile) {
             log(choices.map(choice => choice.value));
             scripts2run = choices.map(choice => choice.value);
         }
-        scripts2run.forEach(async (key) => {
+        for (const key of scripts2run) {
             await runcmd(scripts[key]);
-        })
+        }
     } else if (choices.length === 1) {
         let script = scripts[choices[0].value];
         // run single command
@@ -170,10 +170,9 @@ module.exports = async function nnr(sequential, currentFile) {
     async function runcmd(script) {
         log('script=', script);
         const cmd = spawn('bash', ['-c', script.replace('/\\/g', '\\\\')], { stdio: 'inherit' });
-        const onClose = new Promise((resolve) => {
+        return new Promise((resolve) => {
             cmd.on('close', (code) => resolve(code));
         });
-        return onClose;
     }
 
     async function getenv() {
