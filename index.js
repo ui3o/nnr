@@ -36,7 +36,7 @@ module.exports = async function nnr(sequential) {
     }
     // detect local json
     const localPackageJson = `${env.PWD}/package.json`
-    log('env', localPackageJson);
+    log('localPackageJson', localPackageJson);
     if (fs.existsSync(localPackageJson)) {
         // add node modules bin to path
         env.PATH = env.PWD + '/node_modules/.bin:' + env.PATH;
@@ -174,7 +174,7 @@ module.exports = async function nnr(sequential) {
             allEnv.forEach(e => {
                 if (e.startsWith('npm_')) {
                     const ce = e.split('=');
-                    log('npm env:', ce[0], '=', ce[1])
+                    // log('npm env:', ce[0], '=', ce[1])
                     env[ce[0]] = ce[1];
                 }
             });
