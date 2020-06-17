@@ -18,6 +18,7 @@ module.exports = async function nnr(sequential, currentFile) {
         .option("c", { alias: "cw", describe: "Current working directory", type: "string" })
         .option("k", { alias: "keep", describe: "Keep the current directory for working directory", type: "boolean" })
         .option("s", { alias: "sequential", describe: "Run a group of tasks sequentially", type: "boolean" })
+        .option("a", { alias: "ask", describe: "Ask to continue. CTRL+C stop the process. Only with -s", type: "boolean" })
         .option("p", { alias: "parallel", describe: "Run a group of tasks in parallel", type: "boolean" })
         .option("d", { alias: "debug", describe: "Turn on debug log", type: "boolean" })
         .alias('v', 'version')
@@ -162,7 +163,9 @@ module.exports = async function nnr(sequential, currentFile) {
             scripts2run = choices.map(choice => choice.value);
         }
         for (const key of scripts2run) {
-            await runcmd(scripts[key]);
+            if (await runcmd(scripts[key]) !== 0) {
+                process.exit(1);
+            }
         }
     } else if (choices.length === 1) {
         let script = scripts[choices[0].value];
@@ -173,7 +176,13 @@ module.exports = async function nnr(sequential, currentFile) {
 
     async function runcmd(script) {
         log('script=', script);
-        const cmd = spawn('bash', ['-c', script.replace('/\\/g', '\\\\')], { stdio: 'inherit' });
+        const scrpt = script.replace('/\\/g', '\\\\');
+        if (options.s && options.a) {
+            // prompt for keypress to continue
+            process.stdout.write(`>> ${scrpt} ... Press any key to continue...`);
+            await ask().then(() => { console.log() });
+        }
+        const cmd = spawn('bash', ['-c', scrpt], { stdio: 'inherit' });
         return new Promise((resolve) => {
             cmd.on('close', (code) => resolve(code));
         });
@@ -196,6 +205,25 @@ module.exports = async function nnr(sequential, currentFile) {
         });
         return new Promise((resolve) => {
             cmd.on('close', (code) => resolve(code));
+        });
+    }
+
+    async function ask() {
+        return new Promise((resolve) => {
+            const handler = buffer => {
+                process.stdin.removeListener("data", handler);
+                process.stdin.setRawMode(false);
+                process.stdin.pause();
+                const bytes = Array.from(buffer);
+                if (bytes.length && bytes[0] === 3) {
+                    process.exit(1);
+                }
+                process.nextTick(resolve);
+            };
+
+            process.stdin.resume();
+            process.stdin.setRawMode(true);
+            process.stdin.once("data", handler);
         });
     }
 
