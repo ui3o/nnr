@@ -12,7 +12,7 @@ const isWin = process.platform === "win32";
 module.exports = async function nnr(sequential, currentFile, setglobal) {
     const DESC = 'desc:';
     // replace fix windows issue
-    const ENVFILE = os.tmpdir().replace(/\\\\/g, '/') + '/.nnrenv';
+    const ENVFILE = os.tmpdir().replace(/\\/g, '/') + '/.nnrenv';
 
     // cli setup
     const options = yargs
