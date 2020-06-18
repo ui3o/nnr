@@ -13,6 +13,13 @@ desc:test:find: "This is a comment desc:test:find"
 test:roo: "echo ... test.yml: run test for test:roo ..."
 test:ruu: "echo ... test.yml: run test for test:ruu ..."
 
+# in yml possible to create multi line command which will compiled to single line
+multiline:command: for i in `seq 1 10`; 
+    do 
+        echo $i;
+        echo s; 
+    done
+
 testr: "nnrs test:r*"
 testrun: "nnrs test:run:*"
 alltest: "nnrs test**"

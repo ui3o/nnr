@@ -27,7 +27,7 @@ Easy replacement for `npm run`. Just run `nnr script:name` instead of ~~npm run 
 
 # Examples
 
-Examples are located in [test/package.json](test/package.json) file.
+Examples are located in [test/package.json](test/package.json) file or [test/test.yml](test/test.yml).
 
 # Dependencies
 
