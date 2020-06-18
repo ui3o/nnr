@@ -20,6 +20,15 @@ multiline:command: for i in `seq 1 10`;
         echo s; 
     done
 
+multiline:var:create: echo var:create;
+    nnrg HELLO hello;
+    nnrg WORLD world
+
+multiline:var:echo: echo var:echo;
+    echo $HELLO;
+    echo $WORLD
+
+
 testr: "nnrs test:r*"
 testrun: "nnrs test:run:*"
 alltest: "nnrs test**"

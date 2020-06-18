@@ -23,6 +23,7 @@
   "bin": {
     "nnrs": "./bin/nnrs.js",
     "nnrp": "./bin/nnrp.js",
+    "nnrg": "./bin/nnrg.js",
     "nnr": "./bin/nnr.js"
   },
   "bugs": {

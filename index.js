@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 
 const fs = require('fs');
+const os = require('os');
 const prompts = require('prompts');
 const { spawn } = require('child_process');
 const yargs = require("yargs");
@@ -8,8 +9,9 @@ const yaml = require('js-yaml');
 const pathLib = require("path");
 const isWin = process.platform === "win32";
 
-module.exports = async function nnr(sequential, currentFile) {
-    const DESC = 'desc:'
+module.exports = async function nnr(sequential, currentFile, setglobal) {
+    const DESC = 'desc:';
+    const ENVFILE = os.tmpdir() + '/.nnrenv';
 
     // cli setup
     const options = yargs
@@ -19,6 +21,8 @@ module.exports = async function nnr(sequential, currentFile) {
         .option("k", { alias: "keep", describe: "Keep the current directory for working directory", type: "boolean" })
         .option("s", { alias: "sequential", describe: "Run a group of tasks sequentially", type: "boolean" })
         .option("a", { alias: "ask", describe: "Ask to continue. CTRL+C stop the process. Only with -s", type: "boolean" })
+        .option("g", { alias: "setglobalenvmode", describe: "Set environment variable into $NNR_ORIGINALPATH/.nnrenv. Usage: nnrg ENV_NAME value, where value [true|false|number|string]", type: "boolean" })
+        .option("n", { alias: "notremoveglobalenv", describe: "Do not remove $NNR_ORIGINALPATH/.nnrenv file", type: "boolean" })
         .option("p", { alias: "parallel", describe: "Run a group of tasks in parallel", type: "boolean" })
         .option("d", { alias: "debug", describe: "Turn on debug log", type: "boolean" })
         .alias('v', 'version')
@@ -36,7 +40,28 @@ module.exports = async function nnr(sequential, currentFile) {
     // add original path
     if (!env.NNR_ORIGINALPATH) {
         env['NNR_ORIGINALPATH'] = process.cwd();
+        if (!options.n) {
+            // remove tmp .nnrenv var
+            await runcmd(`rm -rf ${ENVFILE}`);
+        }
+        // create tmp .nnrenv var
+        await runcmd(`touch -m ${ENVFILE}`);
     }
+
+    // mode: only set environment variable into $NNR_ORIGINALPATH/.nnrenv
+    if (options.g || setglobal) {
+        const envName = options._[0];
+        let envValue = options._[1];
+        log('set only environment variable', envName, envValue);
+        if (envValue === undefined) {
+            console.log('[ERROR] Value of environment variable was set!');
+            process.exit(-1);
+        }
+        envValue = !isNaN(envValue) ? envValue : envValue === 'true' ? true : envValue === 'false' ? false : `${envValue}`;
+        await runcmd(`echo ${envName}=${envValue} >> ${ENVFILE}`);
+        process.exit(0);
+    }
+
     // detect local json
     const localPackageJson = `${process.cwd()}/package.json`
     log('localPackageJson', localPackageJson);
@@ -163,6 +188,8 @@ module.exports = async function nnr(sequential, currentFile) {
             scripts2run = choices.map(choice => choice.value);
         }
         for (const key of scripts2run) {
+            // append to process env
+            appendEnv(fs.readFileSync(ENVFILE, 'utf8'), true);
             if (await runcmd(scripts[key]) !== 0) {
                 process.exit(1);
             }
@@ -171,6 +198,8 @@ module.exports = async function nnr(sequential, currentFile) {
         let script = scripts[choices[0].value];
         // run single command
         log('script', script);
+        // append to process env
+        appendEnv(fs.readFileSync(ENVFILE, 'utf8'), true);
         await runcmd(script);
     }
 
@@ -191,14 +220,7 @@ module.exports = async function nnr(sequential, currentFile) {
     async function getenv() {
         const cmd = spawn('npm', ['run', 'env'], { shell: true });
         cmd.stdout.on('data', (data) => {
-            const allEnv = data.toString('utf8').replace('\r', '').split('\n');
-            allEnv.forEach(e => {
-                if (e.startsWith('npm_')) {
-                    const ce = e.split('=');
-                    // log('npm env:', ce[0], '=', ce[1])
-                    env[ce[0]] = ce[1] === undefined ? '' : ce[1].replace('\r', '').replace('\n', '');
-                }
-            });
+            appendEnv(data.toString('utf8'));
         });
         cmd.stderr.on('data', (data) => {
             console.error(data);
@@ -207,6 +229,19 @@ module.exports = async function nnr(sequential, currentFile) {
             cmd.on('close', (code) => resolve(code));
         });
     }
+
+    function appendEnv(allEnv, all) {
+        log('appendEnv', JSON.stringify(allEnv));
+        allEnv = allEnv.replace('\r', '').split('\n');
+        allEnv.forEach(e => {
+            if (e.startsWith('npm_') || all) {
+                const ce = e.split('=');
+                // log('npm env:', ce[0], '=', ce[1])
+                env[ce[0]] = ce[1] === undefined ? '' : ce[1].replace('\r', '').replace('\n', '');
+            }
+        });
+    }
+
 
     async function ask() {
         return new Promise((resolve) => {
