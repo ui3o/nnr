@@ -21,7 +21,7 @@ module.exports = async function nnr(sequential, currentFile, setglobal) {
         .option("c", { alias: "cw", describe: "Current working directory", type: "string" })
         .option("k", { alias: "keep", describe: "Keep the current directory for working directory", type: "boolean" })
         .option("s", { alias: "sequential", describe: "Run a group of tasks sequentially", type: "boolean" })
-        .option("a", { alias: "ask", describe: "Ask to continue. CTRL+C stop the process. Only with -s", type: "boolean" })
+        .option("a", { alias: "ask", describe: "Ask to continue. Press any key to continue or CTRL+C stop the process. Only with -s", type: "boolean" })
         .option("g", { alias: "setglobalenvmode", describe: "Set environment variable into $NNR_ORIGINALPATH/.nnrenv. Usage: nnrg ENV_NAME value, where value [true|false|number|string]", type: "boolean" })
         .option("n", { alias: "notremoveglobalenv", describe: "Do not remove $NNR_ORIGINALPATH/.nnrenv file", type: "boolean" })
         .option("p", { alias: "parallel", describe: "Run a group of tasks in parallel", type: "boolean" })
@@ -209,7 +209,7 @@ module.exports = async function nnr(sequential, currentFile, setglobal) {
         const scrpt = script.replace('/\\/g', '\\\\');
         if (options.s && (options.a || env.NNR_ASKTOCONTINUE)) {
             // prompt for keypress to continue
-            process.stdout.write(`>> ${scrpt} ... Press any key to continue...`);
+            process.stdout.write(`[run] >> ${scrpt}`);
             await ask().then(() => { console.log() });
         }
         const cmd = spawn('bash', ['-c', scrpt], { stdio: 'inherit' });
