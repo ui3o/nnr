@@ -23,7 +23,7 @@ module.exports = async function nnr(sequential, currentFile, setglobal) {
         .option("s", { alias: "sequential", describe: "Run a group of tasks sequentially", type: "boolean" })
         .option("a", { alias: "ask", describe: "Ask to continue. Press any key to continue or CTRL+C stop the process. Only with -s", type: "boolean" })
         .option("g", { alias: "setglobalenvmode", describe: "Set environment variable into $NNR_ORIGINALPATH/.nnrenv. Usage: nnrg ENV_NAME value, where value [true|false|number|string]", type: "boolean" })
-        .option("n", { alias: "notremoveglobalenv", describe: "Do not remove $NNR_ORIGINALPATH/.nnrenv file", type: "boolean" })
+        .option("n", { alias: "dontremoveglobalenv", describe: "Do not remove $SYSTEM_TMP/.nnrenv file", type: "boolean" })
         .option("p", { alias: "parallel", describe: "Run a group of tasks in parallel", type: "boolean" })
         .option("d", { alias: "debug", describe: "Turn on debug log", type: "boolean" })
         .alias('v', 'version')
