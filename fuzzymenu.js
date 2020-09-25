@@ -15,6 +15,9 @@ async function _prompt(choices, message) {
     type: "autocomplete",
   });
   const index = choices.findIndex(element => element.title === respone.title)
+  if(index < 0) {
+    process.exit(1);
+  }
   return choices[index];
 }
 
