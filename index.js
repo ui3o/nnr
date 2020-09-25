@@ -26,6 +26,7 @@ module.exports = async function nnr(sequential, currentFile, setglobal) {
         .option("g", { alias: "setglobalenvmode", describe: "Set environment variable into $SYSTEM_TMP/.nnrenv. Usage: nnrg ENV_NAME value, where value [true|false|number|string]", type: "boolean" })
         .option("n", { alias: "dontremoveglobalenv", describe: "Do not remove $SYSTEM_TMP/.nnrenv file", type: "boolean" })
         .option("p", { alias: "parallel", describe: "Run a group of tasks in parallel", type: "boolean" })
+        .option("o", { alias: "output", describe: "Print out executed script line", type: "boolean" })
         .option("d", { alias: "debug", describe: "Turn on debug log", type: "boolean" })
         .alias('v', 'version')
         .alias('h', 'help')
@@ -198,7 +199,7 @@ module.exports = async function nnr(sequential, currentFile, setglobal) {
         for (const src of scripts2run) {
             // append to process env
             appendEnv(fs.readFileSync(ENVFILE, 'utf8'), true);
-            if (await runcmd(src) !== 0) {
+            if (await runcmd(src, true) !== 0) {
                 process.exit(1);
             }
         }
@@ -209,10 +210,10 @@ module.exports = async function nnr(sequential, currentFile, setglobal) {
         log('script', script);
         // append to process env
         appendEnv(fs.readFileSync(ENVFILE, 'utf8'), true);
-        await runcmd(script);
+        await runcmd(script, true);
     }
 
-    async function runcmd(script) {
+    async function runcmd(script, userscript) {
         log('script=', script);
         if (typeof script !== "string") {
             console.log('Your script file is invalid!')
@@ -223,6 +224,9 @@ module.exports = async function nnr(sequential, currentFile, setglobal) {
             // prompt for keypress to continue
             process.stdout.write(`[run] >> ${scrpt}`);
             await ask().then(() => { console.log() });
+        }
+        if(userscript && options.o) {
+            console.log('»', scrpt);
         }
         const cmd = spawn('bash', ['-c', scrpt], { stdio: 'inherit' });
         return new Promise((resolve) => {
