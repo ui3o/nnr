@@ -158,7 +158,11 @@ module.exports = async function nnr(sequential, currentFile, setglobal) {
     Object.keys(scripts).forEach(key => {
         log('key', key);
         if (!key.startsWith(DESC) && key.match(regex)) {
-            const mitem = { title: key, value: key };
+            var mitem = { title: key, cmd: scripts[key]};
+            if (typeof scripts[key] !== "string") {
+                mitem = scripts[key];
+                mitem.title = key;
+            }
             // find comment
             Object.keys(scripts).forEach(comment => {
                 if (comment.startsWith(DESC)) {
@@ -168,10 +172,11 @@ module.exports = async function nnr(sequential, currentFile, setglobal) {
                     }
                 }
             });
-            // pass key value if description not present
+            // pass key cmd if description not present
             if (!mitem.description) {
-                mitem.description = scripts[key];
+                mitem.description = scripts[key].desc ? scripts[key].desc : JSON.stringify(scripts[key]);
             }
+            delete mitem["desc"];
             choices.push(mitem);
         }
     });
@@ -187,18 +192,18 @@ module.exports = async function nnr(sequential, currentFile, setglobal) {
                 scripts2run.push(response);
             }
         } else {
-            log(choices.map(choice => choice.value));
-            scripts2run = choices.map(choice => choice.value);
+            log(choices.map(choice => choice.cmd));
+            scripts2run = choices.map(choice => choice.cmd);
         }
-        for (const key of scripts2run) {
+        for (const src of scripts2run) {
             // append to process env
             appendEnv(fs.readFileSync(ENVFILE, 'utf8'), true);
-            if (await runcmd(scripts[key]) !== 0) {
+            if (await runcmd(src) !== 0) {
                 process.exit(1);
             }
         }
     } else if (choices.length === 1) {
-        let script = scripts[choices[0].value];
+        let script = choices[0].cmd;
         // run single command
         log('script', script);
         // append to process env
@@ -208,6 +213,10 @@ module.exports = async function nnr(sequential, currentFile, setglobal) {
 
     async function runcmd(script) {
         log('script=', script);
+        if (typeof script !== "string") {
+            console.log('Your script file is invalid!')
+            process.exit(1);
+        }
         const scrpt = script.replace('/\\/g', '\\\\');
         if (options.s && (options.a || env.NNR_ASKTOCONTINUE)) {
             // prompt for keypress to continue

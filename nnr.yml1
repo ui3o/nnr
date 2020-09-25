@@ -1,3 +1,17 @@
+sub:moduler:
+    git: "echo git" # this is the command wich will be executed
+    desc: "source control"
+    sub:
+        -   desc: "make a copy"
+            git:clone: "clone"
+            sub:
+                -   desc: "A repository"
+                    repoA: "repoA"
+                -   desc: "B repository"
+                    repoB: "repoOnB-Side"
+        - desc: "make a pull request"
+          pull: "echo pull never fired"
+
 desc:echo: "Original path is $NNR_ORIGINALPATH"
 echo: "echo test.yml: Original path is $NNR_ORIGINALPATH" # This is a yml comment which is better then json
 

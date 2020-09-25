@@ -4,7 +4,7 @@
   "description": "nnr test package json",
   "scripts": {
 
-    "echo": "package.json: Original path is $NNR_ORIGINALPATH",
+    "echo": "echo package.json: Original path is $NNR_ORIGINALPATH",
 
     "test:run:a": "echo ... package.json: run test for A option  ...",
     "desc:test:run:a": "This is a comment desc:test:run:a",
