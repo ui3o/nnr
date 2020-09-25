@@ -8,7 +8,7 @@ const yargs = require("yargs");
 const yaml = require('js-yaml');
 const pathLib = require("path");
 const isWin = process.platform === "win32";
-const fmenu = require('./fuzzymenu.js');
+const menu = require('./fuzzymenu.js');
 
 module.exports = async function nnr(sequential, currentFile, setglobal) {
     const DESC = 'desc:';
@@ -186,7 +186,7 @@ module.exports = async function nnr(sequential, currentFile, setglobal) {
     if (choices.length > 1) {
         let scripts2run = [];
         if (!options.s) {
-            response = await fmenu(choices, 'Select script');
+            response = await menu.fmenu(choices, 'Select script');
             if (response) {
                 log('response', response);
                 scripts2run.push(response);
@@ -203,7 +203,8 @@ module.exports = async function nnr(sequential, currentFile, setglobal) {
             }
         }
     } else if (choices.length === 1) {
-        let script = choices[0].cmd;
+        const cmd = Object.keys(choices[0]).find(v => menu.cmdFinder(v));
+        let script = choices[0][cmd];
         // run single command
         log('script', script);
         // append to process env
