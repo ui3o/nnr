@@ -1,6 +1,6 @@
 {
   "name": "nnr",
-  "version": "1.0.25",
+  "version": "1.1.0",
   "description": "Node based Npm Run. CLI tool to run node scripts.",
   "scripts": {
     "desc:test": "Comment for test script",
@@ -32,6 +32,7 @@
   "author": "ui3o.com",
   "license": "MIT",
   "dependencies": {
+    "fuzzy-search": "^3.2.1",
     "js-yaml": "^3.14.0",
     "prompts": "^2.3.2",
     "yargs": "^15.3.1"

@@ -8,6 +8,7 @@ const yargs = require("yargs");
 const yaml = require('js-yaml');
 const pathLib = require("path");
 const isWin = process.platform === "win32";
+const fmenu = require('./fuzzymenu.js');
 
 module.exports = async function nnr(sequential, currentFile, setglobal) {
     const DESC = 'desc:';
@@ -22,7 +23,7 @@ module.exports = async function nnr(sequential, currentFile, setglobal) {
         .option("k", { alias: "keep", describe: "Keep the current directory for working directory", type: "boolean" })
         .option("s", { alias: "sequential", describe: "Run a group of tasks sequentially", type: "boolean" })
         .option("a", { alias: "ask", describe: "Ask to continue. Press any key to continue or CTRL+C stop the process. Only with -s", type: "boolean" })
-        .option("g", { alias: "setglobalenvmode", describe: "Set environment variable into $NNR_ORIGINALPATH/.nnrenv. Usage: nnrg ENV_NAME value, where value [true|false|number|string]", type: "boolean" })
+        .option("g", { alias: "setglobalenvmode", describe: "Set environment variable into $SYSTEM_TMP/.nnrenv. Usage: nnrg ENV_NAME value, where value [true|false|number|string]", type: "boolean" })
         .option("n", { alias: "dontremoveglobalenv", describe: "Do not remove $SYSTEM_TMP/.nnrenv file", type: "boolean" })
         .option("p", { alias: "parallel", describe: "Run a group of tasks in parallel", type: "boolean" })
         .option("d", { alias: "debug", describe: "Turn on debug log", type: "boolean" })
@@ -78,6 +79,12 @@ module.exports = async function nnr(sequential, currentFile, setglobal) {
     }
     // log('newEnv', process.env)
 
+    // detect local json
+    const localnnrYml = `${process.cwd()}/nnr.yml`
+    log('localnnr.yml', localnnrYml);
+    if (fs.existsSync(localnnrYml)) {
+        options.y = localnnrYml;
+    }
 
     let currentScriptId = '';
     options.j = 'package.json'
@@ -174,15 +181,10 @@ module.exports = async function nnr(sequential, currentFile, setglobal) {
     if (choices.length > 1) {
         let scripts2run = [];
         if (!options.s) {
-            response = await prompts({
-                type: 'select',
-                name: 'value',
-                message: 'Select environment',
-                choices
-            });
-            if (response.value) {
-                log('response.value', response.value);
-                scripts2run.push(response.value);
+            response = await fmenu(choices, 'Select script');
+            if (response) {
+                log('response', response);
+                scripts2run.push(response);
             }
         } else {
             log(choices.map(choice => choice.value));

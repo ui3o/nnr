@@ -1,0 +1,34 @@
+desc:echo: "Original path is $NNR_ORIGINALPATH"
+echo: "echo test.yml: Original path is $NNR_ORIGINALPATH" # This is a yml comment which is better then json
+
+test:run:a: "echo ... test.yml: run test for A option ..."
+desc:test:run:a: "This is a comment desc:test:run:a"
+
+test:run:b: "echo ... test.yml: run test for B option ..."
+desc:test:run:b: "This is a comment desc:test:run:b"
+
+test:find: "find . -type f -exec echo file from test.yml: {} \\;"
+desc:test:find: "This is a comment desc:test:find"
+
+test:roo: "echo ... test.yml: run test for test:roo ..."
+test:ruu: "echo ... test.yml: run test for test:ruu ..."
+
+# in yml possible to create multi line command which will compiled to single line
+multiline:command: for i in `seq 1 10`; 
+    do 
+        echo $i;
+        echo s; 
+    done
+
+multiline:var:create: echo var:create;
+    nnrg HELLO hello;
+    nnrg WORLD world
+
+multiline:var:echo: echo var:echo;
+    echo $HELLO;
+    echo $WORLD
+
+
+testr: "nnrs test:r*"
+testrun: "nnrs test:run:*"
+alltest: "nnrs test**"
