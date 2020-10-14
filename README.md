@@ -28,10 +28,14 @@ Easy replacement for `npm run`. Just run `nnr script:name` instead of ~~npm run 
 * `desc:` description tag for all script
 * run multiple npm-scripts in parallel or sequential like *[npm-run-all](https://github.com/mysticatea/npm-run-all)*
 * all **script runs** inside a *bash* shell
-
+* menu control keys:
+  * select: space, enter
+  * one level up: esc
+  * on top level: esc equals exit
+  * terminate: ctrl+c
 # Examples
 
-Examples are located in [test/package.json](test/package.json) file or [test/test.yml](test/test.yml).
+Examples are located in [test/package.json](test/package.json) file or [test/test.yml](test/test.yml) or [nnr.yml](nnr.yml).
 
 # Dependencies
 
