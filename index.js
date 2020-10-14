@@ -8,7 +8,7 @@ const yargs = require("yargs");
 const yaml = require('js-yaml');
 const pathLib = require("path");
 const isWin = process.platform === "win32";
-const menu = require('./fuzzymenu.js');
+const menu = require('./menu.js');
 
 module.exports = async function nnr(sequential, currentFile, setglobal) {
     const DESC = 'desc:';
@@ -26,6 +26,7 @@ module.exports = async function nnr(sequential, currentFile, setglobal) {
         .option("g", { alias: "setglobalenvmode", describe: "Set environment variable into $SYSTEM_TMP/.nnrenv. Usage: nnrg ENV_NAME value, where value [true|false|number|string]", type: "boolean" })
         .option("n", { alias: "dontremoveglobalenv", describe: "Do not remove $SYSTEM_TMP/.nnrenv file", type: "boolean" })
         .option("p", { alias: "parallel", describe: "Run a group of tasks in parallel", type: "boolean" })
+        .option("y", { alias: "stay", describe: "After script execution stay in the menu system", type: "boolean" })
         .option("o", { alias: "output", describe: "Print out executed script line", type: "boolean" })
         .option("d", { alias: "debug", describe: "Turn on debug log", type: "boolean" })
         .alias('v', 'version')
@@ -184,25 +185,33 @@ module.exports = async function nnr(sequential, currentFile, setglobal) {
 
 
     log(JSON.stringify(choices));
+    console.log(); // add extra line
     if (choices.length > 1) {
-        let scripts2run = [];
-        if (!options.s) {
-            response = await menu.fmenu(choices, 'Select script');
-            if (response) {
-                log('response', response);
-                scripts2run.push(response);
+        let cyclicCounter = 0;
+        do {
+            let scripts2run = [];
+            if(cyclicCounter) {
+                console.log('--- --- ---\n\n')
             }
-        } else {
-            log(choices.map(choice => choice.cmd));
-            scripts2run = choices.map(choice => choice.cmd);
-        }
-        for (const src of scripts2run) {
-            // append to process env
-            appendEnv(fs.readFileSync(ENVFILE, 'utf8'), true);
-            if (await runcmd(src, true) !== 0) {
-                process.exit(1);
+            if (!options.s) {
+                response = await menu.fmenu(choices, '');
+                if (response) {
+                    log('response', response);
+                    scripts2run.push(response);
+                }
+            } else {
+                log(choices.map(choice => choice.cmd));
+                scripts2run = choices.map(choice => choice.cmd);
             }
-        }
+            for (const src of scripts2run) {
+                // append to process env
+                appendEnv(fs.readFileSync(ENVFILE, 'utf8'), true);
+                if (await runcmd(src, true) !== 0) {
+                    process.exit(1);
+                }
+            }
+            cyclicCounter++;
+        } while(options.y)
     } else if (choices.length === 1) {
         const cmd = Object.keys(choices[0]).find(v => menu.cmdFinder(v));
         let script = choices[0][cmd];
