@@ -99,7 +99,6 @@ module.exports = {
         const lastTitleLen = Math.floor(
           (fullCmdListTitles.join(` ${figures.pointerSmall} `).length
             + 2
-            + fullCmdList[fullCmdList.length - 1][response.index].title.length
             + 2)
           / process.stdout.columns);
         process.stdout.write(ansi.erase.lines(lastTitleLen + 2));
