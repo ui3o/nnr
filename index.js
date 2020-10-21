@@ -2,7 +2,6 @@
 
 const fs = require('fs');
 const os = require('os');
-const prompts = require('prompts');
 const { spawn } = require('child_process');
 const yargs = require("yargs");
 const yaml = require('js-yaml');
@@ -13,7 +12,7 @@ const menu = require('./menu.js');
 module.exports = async function nnr(sequential, currentFile, setglobal) {
     const DESC = 'desc:';
     // replace fix windows issue
-    const ENVFILE = os.tmpdir().replace(/\\/g, '/') + '/.nnrenv';
+    const ENVFILE = os.tmpdir().replace(/\\/g, '/') + '/.nnrenv.json';
 
     // cli setup
     const options = yargs
@@ -45,11 +44,13 @@ module.exports = async function nnr(sequential, currentFile, setglobal) {
     if (!env.NNR_ORIGINALPATH) {
         env['NNR_ORIGINALPATH'] = process.cwd();
         if (!options.n) {
-            // remove tmp .nnrenv var
-            await runcmd(`rm -rf ${ENVFILE}`);
+            // remove tmp .nnrenv.json var
+            fs.writeFileSync(ENVFILE, JSON.stringify({}, null, 2));
+        } else {
+            if (!fs.existsSync(ENVFILE)) {
+                fs.writeFileSync(ENVFILE, JSON.stringify({}, null, 2));
+            }
         }
-        // create tmp .nnrenv var
-        await runcmd(`touch -m ${ENVFILE}`);
     }
 
     // mode: only set environment variable into $NNR_ORIGINALPATH/.nnrenv
@@ -61,8 +62,9 @@ module.exports = async function nnr(sequential, currentFile, setglobal) {
             console.log('[ERROR] Value of environment variable was set!');
             process.exit(-1);
         }
-        envValue = !isNaN(envValue) ? envValue : envValue === 'true' ? true : envValue === 'false' ? false : `${envValue}`;
-        await runcmd(`echo ${envName}=${envValue} >> ${ENVFILE}`);
+        const envs = JSON.parse(fs.readFileSync(ENVFILE));
+        envs[envName] = envValue;
+        fs.writeFileSync(ENVFILE, JSON.stringify(envs, null, 2));
         process.exit(0);
     }
 
@@ -77,7 +79,7 @@ module.exports = async function nnr(sequential, currentFile, setglobal) {
             env.PATH = process.cwd() + '/node_modules/.bin:' + env.PATH;
         }
         // get all npm env variable
-        await getenv();
+        await getenv(JSON.parse(fs.readFileSync(localPackageJson)), ['npm', 'package']);
     }
     // log('newEnv', process.env)
 
@@ -85,7 +87,7 @@ module.exports = async function nnr(sequential, currentFile, setglobal) {
     const localnnrYml = `${process.cwd()}/nnr.yml`
     log('localnnr.yml', localnnrYml);
     if (fs.existsSync(localnnrYml)) {
-        options.y = localnnrYml;
+        options.m = localnnrYml;
     }
 
     let currentScriptId = '';
@@ -93,7 +95,7 @@ module.exports = async function nnr(sequential, currentFile, setglobal) {
     options._.forEach(param => {
         if (param.endsWith('.json') || param.endsWith('.yml')) {
             filePath = param;
-            options.y = param.endsWith('.yml') ? param : undefined;
+            options.m = param.endsWith('.yml') ? param : undefined;
             options.j = param.endsWith('.json') ? param : undefined;
         } else {
             currentScriptId = param;
@@ -101,10 +103,10 @@ module.exports = async function nnr(sequential, currentFile, setglobal) {
     });
 
     if (currentFile) {
-        options.y = currentFile.endsWith('.yml') ? currentFile : undefined;
+        options.m = currentFile.endsWith('.yml') ? currentFile : undefined;
         options.j = currentFile.endsWith('.json') ? currentFile : undefined;
     } else {
-        env.NNR_ORIGINALFILE = options.y ? pathLib.resolve(options.y) : pathLib.resolve(options.j);
+        env.NNR_ORIGINALFILE = options.m ? pathLib.resolve(options.m) : pathLib.resolve(options.j);
     }
 
     if (sequential !== undefined && sequential) {
@@ -120,13 +122,13 @@ module.exports = async function nnr(sequential, currentFile, setglobal) {
     var regex = '.*';
     const path = options.k ? '' :
         options.c ? options.c :
-            options.y ? options.y.replace(/[\w]*\.yml/, '') :
+            options.m ? options.m.replace(/[\w]*\.yml/, '') :
                 options.j.replace(/[\w]*\.json/, '');
     const choices = [];
     var scripts;
 
-    if (options.y) {
-        scripts = yaml.safeLoad(fs.readFileSync(options.y, 'utf8'));
+    if (options.m) {
+        scripts = yaml.safeLoad(fs.readFileSync(options.m, 'utf8'));
     } else {
         scripts = JSON.parse(fs.readFileSync(options.j)).scripts;
     }
@@ -160,7 +162,7 @@ module.exports = async function nnr(sequential, currentFile, setglobal) {
     Object.keys(scripts).forEach(key => {
         log('key', key);
         if (!key.startsWith(DESC) && key.match(regex)) {
-            var mitem = { title: key, cmd: scripts[key]};
+            var mitem = { title: key, cmd: scripts[key] };
             if (typeof scripts[key] !== "string") {
                 mitem = scripts[key];
                 mitem.title = key;
@@ -190,7 +192,7 @@ module.exports = async function nnr(sequential, currentFile, setglobal) {
         let cyclicCounter = 0;
         do {
             let scripts2run = [];
-            if(cyclicCounter) {
+            if (cyclicCounter) {
                 console.log('--- --- ---\n\n')
             }
             if (!options.s) {
@@ -205,20 +207,20 @@ module.exports = async function nnr(sequential, currentFile, setglobal) {
             }
             for (const src of scripts2run) {
                 // append to process env
-                appendEnv(fs.readFileSync(ENVFILE, 'utf8'), true);
+                getenv(JSON.parse(fs.readFileSync(ENVFILE)));
                 if (await runcmd(src, true) !== 0) {
                     process.exit(1);
                 }
             }
             cyclicCounter++;
-        } while(options.y)
+        } while (options.y)
     } else if (choices.length === 1) {
         const cmd = Object.keys(choices[0]).find(v => menu.cmdFinder(v));
         let script = choices[0][cmd];
         // run single command
         log('script', script);
         // append to process env
-        appendEnv(fs.readFileSync(ENVFILE, 'utf8'), true);
+        getenv(JSON.parse(fs.readFileSync(ENVFILE)));
         await runcmd(script, true);
     }
 
@@ -234,38 +236,31 @@ module.exports = async function nnr(sequential, currentFile, setglobal) {
             process.stdout.write(`[run] >> ${scrpt}`);
             await ask().then(() => { console.log() });
         }
-        if(userscript && options.o) {
+        if (userscript && options.o) {
             console.log('»', scrpt);
         }
-        const cmd = spawn('bash', ['-c', scrpt], { stdio: 'inherit' });
+        let cmd;
+        if (isWin) {
+            cmd = spawn('cmd.exe', ['/c', 'bash', '-c', scrpt], { stdio: 'inherit' });
+        } else {
+            cmd = spawn('bash', ['-c', scrpt], { stdio: 'inherit' });
+        }
         return new Promise((resolve) => {
             cmd.on('close', (code) => resolve(code));
         });
     }
 
-    async function getenv() {
-        const cmd = spawn('npm', ['run', 'env'], { shell: true });
-        cmd.stdout.on('data', (data) => {
-            appendEnv(data.toString('utf8'));
-        });
-        cmd.stderr.on('data', (data) => {
-            console.error(data);
-        });
-        return new Promise((resolve) => {
-            cmd.on('close', (code) => resolve(code));
-        });
-    }
-
-    function appendEnv(allEnv, all) {
-        log('appendEnv', JSON.stringify(allEnv));
-        allEnv = allEnv.replace('\r', '').split('\n');
-        allEnv.forEach(e => {
-            if (e.startsWith('npm_') || all) {
-                const ce = e.split('=');
-                // log('npm env:', ce[0], '=', ce[1])
-                env[ce[0]] = ce[1] === undefined ? '' : ce[1].replace('\r', '').replace('\n', '');
+    async function getenv(jObj = {}, names = []) {
+        Object.keys(jObj).forEach(k => {
+            names.push(k.replace(':', '_'));
+            if (typeof jObj[k] === 'object') {
+                getenv(jObj[k], names);
+                names.pop();
+            } else {
+                env[names.join('_')] = jObj[k];
+                names.pop();
             }
-        });
+        })
     }
 
 
