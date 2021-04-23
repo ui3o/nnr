@@ -1,6 +1,6 @@
 
 const prompts = require('prompts');
-const figures = require('./node_modules/prompts/lib/util/figures');
+const figures = require('prompts/lib/util/figures');
 const ansi = require('sisteransi');
 
 async function _prompt(choices, message, autoselect) {
