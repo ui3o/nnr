@@ -187,7 +187,6 @@ module.exports = async function nnr(sequential, currentFile, setglobal) {
 
 
     log(JSON.stringify(choices));
-    console.log(); // add extra line
     if (choices.length > 1) {
         let cyclicCounter = 0;
         do {
