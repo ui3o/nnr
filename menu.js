@@ -1,8 +1,7 @@
 
 const prompts = require('prompts');
-const figures = require('prompts/lib/util/figures');
 const ansi = require('sisteransi');
-
+const pointerSmall = '›';
 async function _prompt(choices, message, autoselect) {
 
   function search(input) {
@@ -72,7 +71,7 @@ module.exports = {
     let completed = false;
 
     while (!completed) {
-      var response = await _prompt(fullCmdList[fullCmdList.length - 1], fullCmdListTitles.join(` ${figures.pointerSmall} `));
+      var response = await _prompt(fullCmdList[fullCmdList.length - 1], fullCmdListTitles.join(` ${pointerSmall} `));
       if (response.result === null) {
         fullCmdList.pop();
         fullCmdListTitles.pop();
@@ -97,7 +96,7 @@ module.exports = {
       }
       if (!completed) {
         const lastTitleLen = Math.floor(
-          (fullCmdListTitles.join(` ${figures.pointerSmall} `).length
+          (fullCmdListTitles.join(` ${pointerSmall} `).length
             + 2
             + 2)
           / process.stdout.columns);
