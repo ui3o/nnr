@@ -129,6 +129,17 @@ module.exports = async function nnr(sequential, currentFile, setglobal) {
 
     if (options.m) {
         scripts = yaml.safeLoad(fs.readFileSync(options.m, 'utf8'));
+        // in yml possible to use imports array
+        if (Array.isArray(scripts.imports)) {
+            const files = [...scripts.imports];
+            delete scripts.imports;
+            log(`imports found:`, files, scripts);
+            files.forEach(f => {
+                const file = f.startsWith('./') ? `${process.cwd()}/${f}` : f;
+                const imp = yaml.safeLoad(fs.readFileSync(`${file}`, 'utf8'));
+                scripts = { ...imp, ...scripts };
+            })
+        }
     } else {
         scripts = JSON.parse(fs.readFileSync(options.j)).scripts;
     }

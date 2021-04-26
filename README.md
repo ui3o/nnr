@@ -19,6 +19,7 @@ Easy replacement for `npm run`. Just run `nnr script:name` instead of ~~npm run 
 
 * possible to run script from located .json or .yml
 * default nnr.yml detection in the current folder
+* in .yml file possible to use import array with relative and absolute path
 * like finder search in the scripts (if string includes)
 * prompt base submenu system, please read [nnr.yml#1](nnr.yml#1)
 * inherit npm variables

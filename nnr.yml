@@ -1,3 +1,5 @@
+imports:
+    - ./nnr_test.yml
 sub:moduler:
     git: "echo git" # this is the command wich will be executed
     desc: "source control"
