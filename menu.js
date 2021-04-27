@@ -73,6 +73,7 @@ module.exports = {
     while (!completed) {
       var response = await _prompt(fullCmdList[fullCmdList.length - 1], fullCmdListTitles.join(` ${pointerSmall} `));
       if (response.result === null) {
+        // step out
         fullCmdList.pop();
         fullCmdListTitles.pop();
         fullValue.pop();
@@ -80,6 +81,7 @@ module.exports = {
           process.exit(-1);
         }
       } else {
+        // step into
         const cmd = Object.keys(response.result).find(v => module.exports.cmdFinder(v));
         fullValue.push(response.result[cmd]);
         if (response.result.sub) {
