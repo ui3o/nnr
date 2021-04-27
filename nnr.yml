@@ -23,6 +23,10 @@ desc:test:run:a: "This is a comment desc:test:run:a"
 test:run:b: "echo ... test.yml: run test for B option ..."
 desc:test:run:b: "This is a comment desc:test:run:b"
 
+test:run:eval: "eval: console.log('hi')"
+desc:test:run:eval: "This is a comment desc:test:run:eval"
+
+
 test:find: "find . -type f -exec echo file from test.yml: {} \\;"
 desc:test:find: "This is a comment desc:test:find"
 

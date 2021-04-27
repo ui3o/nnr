@@ -252,6 +252,14 @@ module.exports = async function nnr(sequential, currentFile, setglobal) {
             console.log('»', scrpt);
         }
         let cmd;
+        const evalScript = script.split('eval:')[1];
+        log('evalScript', evalScript)
+        if (evalScript) {
+            eval(evalScript);
+            return new Promise((resolve) => {
+                resolve(0);
+            });
+        }
         if (isWin) {
             cmd = spawn('cmd.exe', ['/c', 'bash', '-c', scrpt], { stdio: 'inherit' });
         } else {
