@@ -32,7 +32,7 @@
   "author": "ui3o.com",
   "license": "MIT",
   "dependencies": {
-    "js-yaml": "^3.14.0",
+    "js-yaml": "^4.1.1",
     "prompts": "^2.4.1",
     "yargs": "^15.3.1"
   }
